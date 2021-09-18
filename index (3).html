@@ -1,0 +1,163 @@
+<html>
+<head>
+<link href='https://fonts.googleapis.com/css?family=ABeeZee' rel='stylesheet'>
+<title>CPS Test HTML5</title>
+<style type="text/css">
+
+body {
+  background-color: #7c7c7c;
+}
+
+  #content {
+    width: 290px;
+    border: 10px solid #003a1f;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 20px;
+    user-select: none;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(#67ffeb, #6e9cff);
+  box-shadow: 0px 6px 6px -3px rgba(0, 0, 0, 0.2), 0px 10px 14px 1px rgba(0, 0, 0, 0.14), 0px 4px 18px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 25px;
+  font-family: 'ABeeZee';
+  }
+
+  #clickarea {
+    border-radius: 25px;
+    width: 500px;
+    height : 300px;
+    border: 20px solid #001644;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 20px;
+    position: relative;
+  }
+
+  #logo {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    margin-top: 50px;
+    display: block;
+    user-select: none;
+  }
+
+  #start {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    border: 3;
+    font-family: 'ABeeZee';
+    height:150px;
+    width:250px;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 2rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 20px;
+    background: #6e9cff;
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
+                inset -2px -2px 3px rgba(0, 0, 0, .6);
+    filter: blur(15px);
+    transition: filter 0.3s;
+  }
+
+  #start:hover {
+    background: #8db1ff;
+    filter: blur(0px);
+  }
+
+  #start:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
+                inset 2px 2px 3px rgba(0, 0, 0, .6);
+  }
+</style>
+</head>
+<body>
+
+  <div id="content">
+    Timer: <span id="timer"></span><br/>
+    Score: <span id="score"></span><br/>
+    Clicks/s: <span id="clicks"></span>
+  </div>
+  <div id="clickarea">
+    <button id="start">Start</button>
+  </div>
+  <script type="text/javascript">
+    var score; // to store the current score
+    var duration = 10; // 10 seconds
+    var startTime; // start time
+    var ended = true; // boolean indicating if game is ended
+    // we get DOM References for some HTML elements
+    var timerTxt = document.getElementById("timer");
+    var scoreTxt = document.getElementById("score");
+    var clicksTxt = document.getElementById("clicks");
+    var startBtn = document.getElementById("start");
+    var clickArea = document.getElementById("clickarea");
+    // we define two functions for showing or hiding a HTML element
+    var show = function(elem) {
+      elem.style.display = 'inline';
+    };
+    var hide = function(elem) {
+      elem.style.display = 'none';
+    };
+    // Method called when the game starts
+    function startGame() {
+      hide(startBtn);
+      score = -1;
+      ended = false;
+      // we get start time
+      startTime = new Date().getTime();
+      // we create a timer with the setInterval method
+      var timerId = setInterval(function() {
+        var total = (new Date().getTime() - startTime) / 1000;
+        // while total lower than duration, we update timer and the clicks by seconds
+        if (total < duration) {
+          timerTxt.textContent = total.toFixed(3);
+          clicksTxt.textContent = (score / total).toFixed(2);
+        } else {
+          // otherwise, game is ended, we clear interval and we set game as ended
+          ended = true;
+          clearInterval(timerId);
+          // we call the end game method
+          endGame();
+        }
+      }, 1);
+  }
+  // end game method
+  function endGame() {
+    // we write final stats
+    var clicsBySeconds = (score / duration).toFixed(2);
+    timerTxt.textContent = duration.toFixed(3);
+    clicksTxt.textContent = clicsBySeconds;
+    // we show start button to play an other game
+    show(startBtn);
+    // we display result to the user in delayed mode 
+    //to update DOM elements just before the alert
+    setTimeout(function() {
+      alert('You made ' + score + ' clicks in ' + duration + 
+      ' seconds. It is ' + clicsBySeconds + 
+      ' clicks by seconds. Try again!');
+    }, 10);
+  }
+  // we set a click event listener on the start button
+  startBtn.addEventListener("click", function(e) {
+    startGame();
+  });
+  // we add a click event listener on the click area div to update the score when the user will click
+  clickArea.addEventListener("click", function(e) {
+    if (!ended) {
+      score++;
+      scoreTxt.textContent = score;
+    }
+  });
+</script>
+</body>
+</html>
